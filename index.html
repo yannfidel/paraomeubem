@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nossa História</title>
+    <style>
+        /* ANIMAÇÃO DE ABERTURA */
+        .opening-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeOut 1s ease-in-out 8s forwards;
+        }
+        
+        .heart-loader {
+            width: 80px;
+            height: 80px;
+            background-color: #8b0000;
+            transform: rotate(45deg);
+            position: relative;
+            animation: pulseDark 1.5s ease-in-out infinite;
+            margin-bottom: 60px;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.7);
+        }
+        
+        .heart-loader:before, .heart-loader:after {
+            content: '';
+            width: 80px;
+            height: 80px;
+            background-color: #8b0000;
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .heart-loader:before {
+            top: -40px;
+            left: 0;
+        }
+        
+        .heart-loader:after {
+            top: 0;
+            left: -40px;
+        }
+        
+        .loader-message {
+            color: #e0e0e0;
+            font-size: 18px;
+            text-align: center;
+            padding: 0 20px;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 2s forwards;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        @keyframes pulseDark {
+            0% { transform: rotate(45deg) scale(1); }
+            50% { transform: rotate(45deg) scale(1.2); }
+            100% { transform: rotate(45deg) scale(1); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* CONTEÚDO PRINCIPAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Container principal */
+        .love-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 4.5s forwards;
+            display: none;
+        }
+        
+        /* Elementos decorativos */
+        .corner-heart {
+            position: absolute;
+            font-size: 18px;
+            opacity: 0.3;
+            color: #8b0000;
+        }
+        
+        .top-left { top: 10px; left: 10px; }
+        .top-right { top: 10px; right: 10px; }
+        .bottom-left { bottom: 10px; left: 10px; }
+        .bottom-right { bottom: 10px; right: 10px; }
+        
+        /* Cabeçalho */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .header:after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #8b0000, transparent);
+            margin: 15px auto;
+        }
+        
+        h1 {
+            font-size: 2em;
+            font-weight: normal;
+            color: #8b0000;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+        
+        .subtitle {
+            font-style: italic;
+            color: #b0b0b0;
+            font-size: 1em;
+        }
+        
+        /* CARROSSEL RESPONSIVO */
+        .carousel-modern {
+            position: relative;
+            max-width: 100%;
+            margin: 50px auto;
+            overflow: hidden;
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        .carousel-slide {
+            min-width: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .carousel-image-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-height: 70vh;
+            overflow: hidden;
+        }
+        
+        .carousel-image {
+            max-width: 100%;
+            max-height: 70vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            opacity: 0.95;
+        }
+        
+        .carousel-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: #fff;
+        }
+        
+        .carousel-title {
+            font-size: 1.4em;
+            margin-bottom: 8px;
+            color: #fff;
+            font-weight: 400;
+        }
+        
+        .carousel-text {
+            font-size: 0.95em;
+            line-height: 1.5;
+            opacity: 0.9;
+            max-width: 80%;
+        }
+        
+        .carousel-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 2;
+        }
+        
+        .carousel-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-indicator.active {
+            background: #8b0000;
+            transform: scale(1.3);
+        }
+
+        .botao{
+            background-color: #8b0000;
+            color: white;
+            text-decoration: none;
+            width: 150px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 30px;
+        }
+
+        .botoes{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(139, 0, 0, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            z-index: 2;
+            opacity: 0;
+        }
+        
+        .carousel-modern:hover .carousel-arrow {
+            opacity: 1;
+        }
+        
+        .carousel-arrow:hover {
+            background: rgba(139, 0, 0, 0.7);
+        }
+        
+        .carousel-prev {
+            left: 20px;
+        }
+        
+        .carousel-next {
+            right: 20px;
+        }
+
+        /* Seção de memórias */
+        .memory-section {
+            margin: 40px 0;
+            position: relative;
+            padding: 0 10px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            color: #8b0000;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .section-title:before, .section-title:after {
+            content: "♥";
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.3;
+            font-size: 0.7em;
+        }
+        
+        .section-title:before { left: -15px; }
+        .section-title:after { right: -15px; }
+        
+        /* Mensagem especial */
+        .love-letter {
+            background-color: #1a1a1a;
+            border-radius: 2px;
+            padding: 20px;
+            margin: 40px 0;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            border-left: 3px solid #8b0000;
+        }
+        
+        .love-letter p {
+            margin-bottom: 15px;
+            text-indent: 15px;
+            font-size: 0.95em;
+        }
+        
+        .signature {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 1.5em;
+            text-align: right;
+            color: #8b0000;
+            margin-top: 20px;
+        }
+        
+        /* CORAÇÕES DE FUNDO */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            opacity: 0.15;
+            font-size: 24px;
+            animation: float 15s linear infinite;
+            color: #8b0000;
+            text-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-20vh) rotate(360deg); }
+        }
+        
+        /* Rodapé */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.8em;
+            color: #666;
+            padding: 0 15px;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+        
+        /* MEDIA QUERIES */
+        @media (min-width: 600px) {
+            .heart-loader {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .heart-loader:before, .heart-loader:after {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .heart-loader:before {
+                top: -50px;
+            }
+            
+            .heart-loader:after {
+                left: -50px;
+            }
+            
+            .loader-message {
+                font-size: 24px;
+            }
+            
+            .love-container {
+                padding: 40px 20px;
+            }
+            
+            .corner-heart {
+                font-size: 24px;
+            }
+            
+            h1 {
+                font-size: 2.8em;
+            }
+            
+            .subtitle {
+                font-size: 1.2em;
+            }
+            
+            .love-letter {
+                padding: 30px;
+                border-left: 5px solid #8b0000;
+            }
+            
+            .love-letter p {
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .carousel-content {
+                padding: 20px;
+            }
+            
+            .carousel-title {
+                font-size: 1.2em;
+            }
+            
+            .carousel-text {
+                max-width: 100%;
+                font-size: 0.9em;
+            }
+            
+            .carousel-arrow {
+                opacity: 1;
+                width: 35px;
+                height: 35px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .subtitle {
+                font-size: 1em;
+            }
+            
+            .carousel-content {
+                padding: 15px;
+            }
+            
+            .section-title:before, 
+            .section-title:after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animação de abertura -->
+    <div class="opening-animation">
+        <div class="heart-loader"></div>
+        <div class="loader-message">Para a Menina Mais Perfeita do Mundo Que Eu Tenho o Prazer de Chamar de Namorada.</div>
+    </div>
+    
+    <!-- Conteúdo principal -->
+    <div class="love-container">
+        <!-- Elementos decorativos nos cantos -->
+        <div class="corner-heart top-left">♥</div>
+        <div class="corner-heart top-right">♥</div>
+        <div class="corner-heart bottom-left">♥</div>
+        <div class="corner-heart bottom-right">♥</div>
+        
+        <!-- Cabeçalho -->
+        <div class="header">
+            <h1>Nossa História</h1>
+            <div class="subtitle">Cada momento com Você é mais que especial.</div>
+        </div>
+        
+        <!-- Seção de memórias com carrossel -->
+        <div class="memory-section">
+            <h2 class="section-title">Nossos Momentos</h2>
+            <p>Desde esse momento, cada instante ao teu lado se transformou em não só um alivio como uma necessidade dentro do meu coração de melão.</p>
+            
+            <div class="carousel-modern">
+                <div class="carousel-track">
+                    <!-- Slide 1 -->
+                    <div class="carousel-slide">
+                        <div class="carousel-image-container">
+                            <img src="primeiraFoto.jpg" alt="Nosso momento" class="carousel-image">
+                        </div>
+                        <div class="carousel-content">
+                            <h3 class="carousel-title">Nossa Primeira Foto Juntos</h3>
+                            <p class="carousel-text">O dia em que nossas vidas se cruzaram e tudo mudou para sempre.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 2 -->
+                    <div class="carousel-slide">
+                        <div class="carousel-image-container">
+                            <img src="nossoPrimeiroRole.jpg" alt="Nosso momento" class="carousel-image">
+                        </div>
+                        <div class="carousel-content">
+                            <h3 class="carousel-title">Nosso Primeiro Role Juntos</h3>
+                            <p class="carousel-text">Quando Percebi que ate os piores lugares se tornam maravilhosos com você.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 3 -->
+                    <div class="carousel-slide">
+                        <div class="carousel-image-container">
+                            <img src="juntosMaisFelizes.jpg" alt="Nosso momento" class="carousel-image">
+                        </div>
+                        <div class="carousel-content">
+                            <h3 class="carousel-title">Essa aqui é pra você ver o quanto juntos somos mais felizes e alegres.</h3>
+                            <p class="carousel-text">Aquela conversa que só aconteceu por causa do Tui kkk. </p>
+                        </div>
+                    </div>
+                    <!-- Slide 4 -->
+                    <div class="carousel-slide">
+                        <div class="carousel-image-container">
+                            <img src="bobosFelizes.jpg" alt="Nosso momento" class="carousel-image">
+                        </div>
+                        <div class="carousel-content">
+                            <h3 class="carousel-title">Como eu AMO ser bobo com você meu amor.</h3>
+                            <p class="carousel-text">Adoro como você ri das minhas piadas e como eu posso ser eu mesmo perto de você.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navegação -->
+                <button class="carousel-arrow carousel-prev">❮</button>
+                <button class="carousel-arrow carousel-next">❯</button>
+                
+                <div class="carousel-nav">
+                    <div class="carousel-indicator active"></div>
+                    <div class="carousel-indicator"></div>
+                    <div class="carousel-indicator"></div>
+                    <div class="carousel-indicator"></div>
+                </div>
+            </div>
+
+        </div>
+
+        
+        
+        <!-- Carta de amor -->
+        <div class="love-letter">
+            <h2 class="section-title">Para Mari</h2>
+            <p>Meu amor, encontrar palavras que expressem tudo o que sinto é sempre um desafio, mas quero que saiba que Eu te amo de montão la no meu coração de melão.</p>
+            <p>Você ilumina meus dias mais cinzentos, a sua voz acalma minha alma inquieta, e o seu amor preenche cada espaço do meu ser (lá ele) de uma maneira que eu nunca imaginei possível.</p>
+            <p>Neste Dia dos Namorados, prometo cultivar nosso amor com a mesma dedicação e ternura que você merece, hoje e sempre.</p>
+            <p>Eu poderia passar horas e mais horas falando do que e porque eu te amo mas ao inves disso vou tentar botar em palavras tudo oque eu sinto nesse pequeno texto que preparei</p>
+            <p>Meu bem, você é incrivel e mais do que eu te amo eu te adimiro por todas as qualidades tanto pela </p> 
+            <p>sua maturidade,</p> 
+            <p>sua inteligencia,</p>
+            <p>sua curiosidade,</p>
+            <p>sua perspicácia,</p>
+            <p>seus sonhos,</p>   
+            <p>sua beleza,</p> 
+            <p>o jeito que você faz e se perocupa com as coisas tudo isso me deixa completamente pasmo com a minha sorte de ter encontrado alguem como você pra namorar, queria poder parar o tempo so pra passar anos e mais anos com você, te quero mais do que aqui até saturno te desejo eternamente.  </p>  
+            <p>Com Amor</p>
+            <div class="signature">-Yann Fidelis</div>
+        </div>
+
+
+         <!-- surpresinha -->
+        <div>
+            <h2 class="section-title">Posso Te Fazer uma pergunta?</h2>
+
+            <div class="botoes">
+            <div class="botao">
+                <a class="botao" href="pedido.html">SIM</a>
+            </div> 
+            <div class="botao">
+                <a class="botao" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">NÃO</a>
+            </div>
+        </div>
+        </div>
+        
+        <!-- Rodapé -->
+        <div class="footer">
+            <p>Feito com ♥ para a pessoa mais especial da minha vida</p>
+            <p>© 2025 - Nosso Amor</p>
+        </div>
+    </div>
+    
+    <!-- Corações flutuantes de fundo -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+    
+    <script>
+        // Cria corações flutuantes (maiores e mais visíveis)
+        const container = document.getElementById('floatingHearts');
+        for (let i = 0; i < 25; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '♥';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = 10 + Math.random() * 25 + 's';
+            heart.style.animationDelay = Math.random() * 5 + 's';
+            heart.style.fontSize = 20 + Math.random() * 30 + 'px';
+            heart.style.opacity = 0.1 + Math.random() * 0.2;
+            container.appendChild(heart);
+        }
+        
+        // Mostra o conteúdo após a animação
+        setTimeout(() => {
+            document.querySelector('.love-container').style.display = 'block';
+        }, 4500);
+        
+        // Carrossel de Fotos
+        document.addEventListener('DOMContentLoaded', function() {
+            const track = document.querySelector('.carousel-track');
+            const slides = document.querySelectorAll('.carousel-slide');
+            const indicators = document.querySelectorAll('.carousel-indicator');
+            const prevBtn = document.querySelector('.carousel-prev');
+            const nextBtn = document.querySelector('.carousel-next');
+            
+            let currentIndex = 0;
+            const totalSlides = slides.length;
+            
+            function updateCarousel() {
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                
+                // Atualiza indicators
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === currentIndex);
+                });
+            }
+            
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % totalSlides;
+                updateCarousel();
+            }
+            
+            function prevSlide() {
+                currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                updateCarousel();
+            }
+            
+            // Event listeners
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+            
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateCarousel();
+                });
+            });
+            
+            // Auto-advance (opcional)
+            // setInterval(nextSlide, 5000);
+        });
+    </script>
+</body>
+</html>
